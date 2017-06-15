@@ -9,13 +9,13 @@ import com.badlogic.gdx.math.Rectangle;
 public abstract class EntityTemplate {
 
     // -- attributes --
-    protected float x;
-    protected float y;
+    private float x;
+    private float y;
 
-    protected float width = 1;
-    protected float height = 1;
+    private float width = 1;
+    private float height = 1;
 
-    protected Rectangle bounds;
+    private Rectangle bounds;
 
     // -- constrictors --
 
