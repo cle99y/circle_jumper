@@ -21,7 +21,7 @@ public class Planet {
     // -- constrictors --
 
     public Planet() {
-        bounds = new Circle( x, y, GameConfig.PLANET_HALF_SIZE );
+        bounds = new Circle( x, y, GameConfig.PLANET_RADIUS );
     }
 
     public void setPosition( float x, float y ) {
@@ -68,6 +68,5 @@ public class Planet {
 
     protected void updateBounds() {
         bounds.setPosition( x + getWidth() / 2, y + getHeight() / 2 );
-
     }
 }

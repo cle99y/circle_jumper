@@ -1,11 +1,16 @@
 package com.geeklife.screen.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.geeklife.congig.GameConfig;
+import com.geeklife.entity.Monster;
 import com.geeklife.entity.Planet;
 import com.geeklife.util.ViewportUtils;
 import com.geeklife.util.debug.DebugCameraController;
@@ -14,7 +19,9 @@ import com.geeklife.util.debug.DebugCameraController;
  * Created by cle99 on 15/06/2017.
  */
 
-public class GameRenderer implements Disposable{
+public class GameRenderer implements Disposable {
+
+    private static final Logger log = new Logger( GameRenderer.class.getName(), Logger.DEBUG );
 
     private final GameController controller;
 
@@ -24,6 +31,7 @@ public class GameRenderer implements Disposable{
     private DebugCameraController debugCameraController;
 
     private Planet planet;
+    private Monster monster;
 
     // -- constructors --
 
@@ -36,8 +44,8 @@ public class GameRenderer implements Disposable{
         camera = new OrthographicCamera();
         viewport = new FitViewport( GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera );
         renderer = new ShapeRenderer();
-        planet = new Planet();
-
+        planet = controller.getPlanet();
+        monster = controller.getMonster();
 
         debugCameraController = new DebugCameraController();
         debugCameraController.setStartPosition( GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y );
@@ -49,20 +57,34 @@ public class GameRenderer implements Disposable{
         debugCameraController.applyTo( camera );
 
         viewport.apply();
-        renderer.setProjectionMatrix( camera.combined );
-        renderer.begin( ShapeRenderer.ShapeType.Line);
 
+        renderDebug();
+
+        renderer.setProjectionMatrix( camera.combined );
+        renderer.begin( ShapeRenderer.ShapeType.Line );
+
+        renderer.setColor( Color.YELLOW );
+        Circle planetBounds = planet.getBounds();
         renderer.circle(
-                GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y,
-                GameConfig.PLANET_HALF_SIZE, 30
+                planetBounds.x, planetBounds.y,
+                planetBounds.radius, 30
+        );
+        renderer.setColor( Color.GREEN );
+        Rectangle monsterBounds = monster.getBounds();
+        renderer.rect(
+                monsterBounds.x, monsterBounds.y,
+                0, 0,
+                monsterBounds.width, monsterBounds.height,
+                1, 1,
+                GameConfig.MONSTER_START_ANGLE - monster.getAngleDeg()
         );
 
         renderer.end();
 
-        renderDebug();
+
     }
 
-    public void resize(int width, int height) {
+    public void resize( int width, int height ) {
         viewport.update( width, height, true );
         ViewportUtils.debugPixelsPerUnit( viewport );
     }
@@ -73,7 +95,7 @@ public class GameRenderer implements Disposable{
     }
 
     // -- private methods --
-    private void renderDebug(){
+    private void renderDebug() {
         ViewportUtils.drawGrid( viewport, renderer, GameConfig.CELL_SIZE );
     }
 }

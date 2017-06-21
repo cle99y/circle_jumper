@@ -19,7 +19,18 @@ public class GameConfig {
     public static final int CELL_SIZE = 1;
 
     public static final float PLANET_SIZE = 9f;
-    public static final float PLANET_HALF_SIZE = PLANET_SIZE / 2;
+    public static final float PLANET_RADIUS = PLANET_SIZE / 2;
+
+    public static final float MONSTER_SIZE = 1f;
+    public static final float MONSTER_HALF_SIZE = MONSTER_SIZE / 2f;
+    public static final float MONSTER_START_ANG_SPEED = 45f;
+    public static final float MONSTER_START_ANGLE = 0f;
+
+    public static final float JUMP_ACCELERATION = 3f;
+    public static final float JUMP_HEIGHT = 2f;
+    public static final float JUMP_TIME = 1f;
+
+
 
 
     // private constructor

@@ -12,8 +12,8 @@ public abstract class EntityTemplate {
     private float x;
     private float y;
 
-    private float width = 1;
-    private float height = 1;
+    private float width;
+    private float height;
 
     private Rectangle bounds;
 
