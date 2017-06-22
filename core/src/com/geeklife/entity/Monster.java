@@ -16,9 +16,7 @@ public class Monster extends EntityTemplate {
     // -- attributes --
     private float angleDeg = 0;
     private float angularSpeed = GameConfig.MONSTER_START_ANG_SPEED;
-    private float jumpSpeed;
     private float jumpTime;
-    private float acceleration = GameConfig.JUMP_ACCELERATION;
     private float radius = GameConfig.PLANET_RADIUS;
     private MonsterState state = MonsterState.WALKING;
 
@@ -71,11 +69,6 @@ public class Monster extends EntityTemplate {
         state = MonsterState.JUMPING;
         jumpTime = 0f;
         log.debug( "jumping" );
-    }
-
-    private void fall() {
-        state = MonsterState.FALLING;
-        log.debug( "falling" );
     }
 
     private void walk() {

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.geeklife.congig.GameConfig;
+import com.geeklife.entity.Coin;
 import com.geeklife.entity.Monster;
 import com.geeklife.entity.Planet;
 import com.geeklife.util.ViewportUtils;
@@ -66,7 +67,8 @@ public class GameRenderer implements Disposable {
         renderer.setColor( Color.YELLOW );
         Circle planetBounds = planet.getBounds();
         renderer.circle(
-                planetBounds.x, planetBounds.y,
+                planetBounds.x,
+                planetBounds.y,
                 planetBounds.radius, 30
         );
         renderer.setColor( Color.GREEN );
@@ -76,8 +78,21 @@ public class GameRenderer implements Disposable {
                 0, 0,
                 monsterBounds.width, monsterBounds.height,
                 1, 1,
-                GameConfig.MONSTER_START_ANGLE - monster.getAngleDeg()
+                GameConfig.START_ANGLE - monster.getAngleDeg()
         );
+
+        // render coins
+        renderer.setColor( Color.MAGENTA );
+        for ( Coin coin : controller.getCoins() ) {
+            Rectangle coinBounds = coin.getBounds();
+            renderer.rect(
+                    coinBounds.x, coinBounds.y,
+                    0, 0,
+                    coinBounds.width, coinBounds.height,
+                    1, 1,
+                    GameConfig.START_ANGLE - coin.getAngle()
+            );
+        }
 
         renderer.end();
 

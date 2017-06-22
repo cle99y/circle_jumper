@@ -2,8 +2,14 @@ package com.geeklife.screen.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
+import com.geeklife.common.GameManager;
 import com.geeklife.congig.GameConfig;
+import com.geeklife.entity.Coin;
 import com.geeklife.entity.Monster;
 import com.geeklife.entity.MonsterState;
 import com.geeklife.entity.Planet;
@@ -16,10 +22,15 @@ public class GameController {
 
     // -- constants --
     private static final Logger log = new Logger( GameController.class.getName(), Logger.DEBUG );
+    private final GameManager GM = GameManager.INSTANCE;
 
     // -- attributes --
     private Planet planet;
     private Monster monster;
+
+    private final Array<Coin> coins = new Array<Coin>();
+    private Pool<Coin> coinPool = Pools.get( Coin.class, 10 );
+    private float coinTimer;
 
     // -- constructors --
     public GameController() {
@@ -39,9 +50,10 @@ public class GameController {
     }
 
     public void update( float delta ) {
-        log.debug("jump cycles " + delta  );
         handleInput();
         monster.update( delta );
+
+        spawnCoins( delta );
 
     }
 
@@ -53,11 +65,33 @@ public class GameController {
         return monster;
     }
 
+    public Array<Coin> getCoins() {
+        return coins;
+    }
+
     // - private methods
     private void handleInput() {
         MonsterState state = monster.getState();
-        if ( Gdx.input.isKeyJustPressed( Input.Keys.SPACE ) && state == MonsterState.WALKING){
+        if ( Gdx.input.isKeyJustPressed( Input.Keys.SPACE ) && state.isWalking() ) {
             monster.jump();
         }
     }
+
+    private void spawnCoins( float delta ) {
+
+        if ( coins.size >= GameConfig.MAX_COINS ) {
+            coinTimer = 0f;
+            return;
+        }
+        coinTimer += delta;
+        if ( coinTimer >= GameConfig.COIN_SPAWN_TIME ) {
+            Coin coin = coinPool.obtain();
+            float angle = MathUtils.random( 360 );
+            coin.setAngle( angle );
+            coins.add( coin );
+            coinTimer = 0f;
+        }
+    }
+
+
 }
