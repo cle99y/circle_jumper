@@ -13,6 +13,7 @@ public class GameManager {
     private int displayScore;
     private int highScore;
     private int displayHighScore;
+    private boolean gameOver;
 
     // -- constructors --
     private GameManager() {
@@ -22,6 +23,7 @@ public class GameManager {
     public void reset() {
         score = 0;
         displayScore = 0;
+        gameOver = false;
     }
 
     public void addToScore( int amount ) {
@@ -50,6 +52,14 @@ public class GameManager {
 
     public int getDisplayHighScore() {
         return displayHighScore;
+    }
+
+    public void setGameOver( boolean gameOver ) {
+        this.gameOver = gameOver;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 }
 

@@ -12,6 +12,8 @@ import com.geeklife.util.entity.EntityTemplate;
 public class Coin extends EntityTemplate implements Pool.Poolable {
 
     private float angle = 0f;
+    private boolean hit;
+
 
     // -- constructors --
     public Coin() {
@@ -20,6 +22,14 @@ public class Coin extends EntityTemplate implements Pool.Poolable {
 
     public float getAngle() {
         return angle;
+    }
+
+    public boolean isHit() {
+        return hit;
+    }
+
+    public void nowHit( boolean hit ) {
+        this.hit = hit;
     }
 
     // -- public methods --

@@ -36,7 +36,7 @@ public class Monster extends EntityTemplate {
                 // reset parameters for walking
                 jumpTime = 0;
                 radius = GameConfig.PLANET_RADIUS;
-                walk();
+                landed();
             }
         }
         //angleDeg = angleDeg % 360;
@@ -71,7 +71,12 @@ public class Monster extends EntityTemplate {
         log.debug( "jumping" );
     }
 
-    private void walk() {
+    public void landed() {
+        state = MonsterState.LANDED;
+        log.debug( "landed" );
+    }
+
+    public void walk() {
         state = MonsterState.WALKING;
         log.debug( "walking" );
     }
@@ -81,5 +86,8 @@ public class Monster extends EntityTemplate {
         return ( float ) ( GameConfig.PLANET_RADIUS + Math.sin( period ) * GameConfig.JUMP_HEIGHT );
     }
 
+    public void reset() {
+        angleDeg = GameConfig.START_ANGLE;
+    }
 
 }

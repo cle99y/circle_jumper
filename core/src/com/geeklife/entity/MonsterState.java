@@ -6,7 +6,8 @@ package com.geeklife.entity;
 
 public enum MonsterState {
     WALKING,
-    JUMPING;
+    JUMPING,
+    LANDED;
 
     // -- public methods --
     public boolean isWalking() {
@@ -15,6 +16,10 @@ public enum MonsterState {
 
     public boolean isJumping() {
         return this == JUMPING;
+    }
+
+    public boolean isLanded() {
+        return this == LANDED;
     }
 
 }

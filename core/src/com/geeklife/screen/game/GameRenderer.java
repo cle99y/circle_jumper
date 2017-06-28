@@ -1,7 +1,11 @@
 package com.geeklife.screen.game;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
@@ -9,9 +13,12 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.geeklife.assets.AssetDescriptors;
+import com.geeklife.common.GameManager;
 import com.geeklife.congig.GameConfig;
 import com.geeklife.entity.Coin;
 import com.geeklife.entity.Monster;
+import com.geeklife.entity.Obstacle;
 import com.geeklife.entity.Planet;
 import com.geeklife.util.ViewportUtils;
 import com.geeklife.util.debug.DebugCameraController;
@@ -23,27 +30,42 @@ import com.geeklife.util.debug.DebugCameraController;
 public class GameRenderer implements Disposable {
 
     private static final Logger log = new Logger( GameRenderer.class.getName(), Logger.DEBUG );
+    private final GameManager GM = GameManager.INSTANCE;
+    private static final int PADDING = 20;
 
     private final GameController controller;
+    private AssetManager assetManager;
 
     private Viewport viewport;
+    private Viewport hudViewport;
     private ShapeRenderer renderer;
     private OrthographicCamera camera;
     private DebugCameraController debugCameraController;
 
+    SpriteBatch sb;
+    private GlyphLayout layout;
+    private BitmapFont font;
+
     private Planet planet;
     private Monster monster;
+    private Obstacle obstacle;
 
     // -- constructors --
 
-    public GameRenderer( GameController controller ) {
+    public GameRenderer( SpriteBatch sb, AssetManager assetManager, GameController controller ) {
         this.controller = controller;
+        this.assetManager = assetManager;
+        this.sb = sb;
         init();
     }
 
     private void init() {
         camera = new OrthographicCamera();
         viewport = new FitViewport( GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera );
+        hudViewport = new FitViewport( GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT );
+        font = assetManager.get( AssetDescriptors.FONT );
+        layout = new GlyphLayout();
+
         renderer = new ShapeRenderer();
         planet = controller.getPlanet();
         monster = controller.getMonster();
@@ -94,13 +116,38 @@ public class GameRenderer implements Disposable {
             );
         }
 
+        // render obstacles
+        for ( Obstacle obstacle : controller.getObstacles() ) {
+            renderer.setColor( Color.ORANGE );
+            Rectangle obstacleBounds = obstacle.getBounds();
+            renderer.rect(
+                    obstacleBounds.x, obstacleBounds.y,
+                    0, 0,
+                    obstacleBounds.width, obstacleBounds.height,
+                    1, 1,
+                    GameConfig.START_ANGLE - obstacle.getAngle()
+            );
+
+            renderer.setColor( Color.TAN );
+            Rectangle sensor = obstacle.getSensor();
+            renderer.rect(
+                    sensor.x, sensor.y,
+                    0,0,
+                    sensor.width, sensor.height,
+                    1,1,
+                    GameConfig.START_ANGLE - obstacle.getAngle()
+            );
+        }
+
         renderer.end();
 
+        renderHUD();
 
     }
 
     public void resize( int width, int height ) {
         viewport.update( width, height, true );
+        hudViewport.update( width, height, true );
         ViewportUtils.debugPixelsPerUnit( viewport );
     }
 
@@ -112,5 +159,30 @@ public class GameRenderer implements Disposable {
     // -- private methods --
     private void renderDebug() {
         ViewportUtils.drawGrid( viewport, renderer, GameConfig.CELL_SIZE );
+    }
+
+    private void renderHUD() {
+        sb.setProjectionMatrix( hudViewport.getCamera().combined );
+        sb.begin();
+
+        drawHUD();
+
+        sb.end();
+    }
+
+    private void drawHUD() {
+        String displayText = "HIGH SCORE:  " + GM.getDisplayHighScore();
+        layout.setText( font, displayText );
+        font.draw(
+                sb, layout,
+                PADDING, GameConfig.HUD_HEIGHT - PADDING
+        );
+
+        displayText = "SCORE:  " + GM.getDisplayScore();
+        layout.setText( font, displayText );
+        font.draw(
+                sb, layout,
+                GameConfig.HUD_WIDTH - PADDING - layout.width, GameConfig.HUD_HEIGHT - PADDING
+        );
     }
 }

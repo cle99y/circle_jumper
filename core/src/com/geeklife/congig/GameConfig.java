@@ -29,16 +29,21 @@ public class GameConfig {
     public static final float MONSTER_START_ANG_SPEED = 45f;
     public static final float START_ANGLE = 0f;
 
-    public static final float JUMP_HEIGHT = 2f;
-    public static final float JUMP_TIME = 0.75f;
+    // monster jump height to be just less than height to jump of side of screen
+    public static final float JUMP_HEIGHT = WORLD_WIDTH/2 - PLANET_RADIUS - MONSTER_SIZE - 0.2f;
+    // determines width of jump, lower time with lower tolerance to obstacles
+    public static final float JUMP_TIME = 1f;
 
     public static final float COIN_SIZE = 1f;
     public static final float COIN_RADIUS = COIN_SIZE / 2f;
     public static final float COIN_SPAWN_TIME = 1.25f;
-    public static final int MAX_COINS = 3;
+    public static final int MAX_COINS = 2;
 
-
-
+    public static final  float OBSTACLE_SIZE = 1f;
+    public static final float OBSTACLE_RADIUS = OBSTACLE_SIZE/2f;
+    public static final float OBSTACLE_SPAWN_TIME = 0.75f;
+    public static final int MAX_OBSTACLES = 3;
+    public static final int OBSTACLE_SCORE = 25;
 
 
 
