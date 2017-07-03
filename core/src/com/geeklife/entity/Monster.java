@@ -68,17 +68,14 @@ public class Monster extends EntityTemplate {
     public void jump() {
         state = MonsterState.JUMPING;
         jumpTime = 0f;
-        log.debug( "jumping" );
     }
 
     public void landed() {
         state = MonsterState.LANDED;
-        log.debug( "landed" );
     }
 
     public void walk() {
         state = MonsterState.WALKING;
-        log.debug( "walking" );
     }
 
     private float jumpHeight( float jumpTime ) {

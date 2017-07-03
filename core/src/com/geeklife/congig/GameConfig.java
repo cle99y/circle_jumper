@@ -37,13 +37,16 @@ public class GameConfig {
     public static final float COIN_SIZE = 1f;
     public static final float COIN_RADIUS = COIN_SIZE / 2f;
     public static final float COIN_SPAWN_TIME = 1.25f;
-    public static final int MAX_COINS = 2;
+    public static final int MAX_COINS = 0;
+    public static final int COIN_SCORE = 10;
 
     public static final  float OBSTACLE_SIZE = 1f;
     public static final float OBSTACLE_RADIUS = OBSTACLE_SIZE/2f;
     public static final float OBSTACLE_SPAWN_TIME = 0.75f;
     public static final int MAX_OBSTACLES = 3;
-    public static final int OBSTACLE_SCORE = 25;
+    public static final int OBSTACLE_SCORE = 5;
+
+    public static final float MIN_ANGULAR_SEPERATION = 60f;
 
 
 

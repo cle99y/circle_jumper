@@ -28,7 +28,7 @@ public class Coin extends EntityTemplate implements Pool.Poolable {
         return hit;
     }
 
-    public void nowHit( boolean hit ) {
+    public void setHit( boolean hit ) {
         this.hit = hit;
     }
 

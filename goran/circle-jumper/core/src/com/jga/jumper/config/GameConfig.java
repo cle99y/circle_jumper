@@ -24,7 +24,7 @@ public class GameConfig {
     public static final float PLANET_SIZE = 9f; // world units
     public static final float PLANET_HALF_SIZE = PLANET_SIZE / 2f; // world units
 
-    public static final float MONSTER_SIZE = 1f; // world units
+    private static final float MONSTER_SIZE = 1f; // world units
     public static final float MONSTER_HALF_SIZE = MONSTER_SIZE / 2f; // world units
     public static final float MONSTER_START_ANG_SPEED = 45f;
     public static final float START_ANGLE = -90f;

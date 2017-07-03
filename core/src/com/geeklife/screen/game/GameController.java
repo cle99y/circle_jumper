@@ -62,9 +62,12 @@ public class GameController {
         monsterStartY = GameConfig.WORLD_CENTER_Y + planet.getHeight() / 2f;
         monster.setPosition( monsterStartX, monsterStartY );
 
+
     }
 
     public void update( float delta ) {
+        GM.updateDisplayScore( delta );
+
         handleInput();
         monster.update( delta );
 
@@ -115,10 +118,34 @@ public class GameController {
         if ( coinTimer >= GameConfig.COIN_SPAWN_TIME ) {
             Coin coin = coinPool.obtain();
             float angle = MathUtils.random( 360 );
-            coin.setAngle( angle );
-            coins.add( coin );
-            coinTimer = 0f;
+            log.debug( "is angle blocked " + confirmObjectAngle( angle ) );
+            if ( confirmObjectAngle( angle ) ) {
+                coin.setAngle( angle );
+                coins.add( coin );
+                coinTimer = 0f;
+            }
         }
+    }
+
+    private boolean confirmObjectAngle( float checkAngle ) {
+        boolean isAngleBlocked = false;
+
+        // check sufficient number of objects to do comparison
+        int numberOfObjects = obstacles.size + coins.size;
+
+        // check obstacles
+        if ( obstacles.size > 0 ) {
+            for ( Obstacle obstacle : obstacles ) {
+                log.debug(checkAngle + " " + obstacle.getAngle());
+                isAngleBlocked = ( ( obstacle.getAngle() - checkAngle ) > (360 - GameConfig.MIN_ANGULAR_SEPERATION) ||
+                        ( obstacle.getAngle() - checkAngle ) < GameConfig.MIN_ANGULAR_SEPERATION );
+                if ( isAngleBlocked ) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private void spawnObstacles( float delta ) {
@@ -131,9 +158,12 @@ public class GameController {
         if ( obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME ) {
             Obstacle obstacle = obstaclePool.obtain();
             float angle = MathUtils.random( 360 );
-            obstacle.setAngle( angle );
-            obstacles.add( obstacle );
-            obstacleTimer = 0f;
+            log.debug("angle confirmed " + confirmObjectAngle( angle ));
+            if ( confirmObjectAngle( angle ) ) {
+                obstacle.setAngle( angle );
+                obstacles.add( obstacle );
+                obstacleTimer = 0f;
+            }
         }
     }
 
@@ -141,6 +171,7 @@ public class GameController {
         boolean hitCoin;
         Rectangle monsterBounds = monster.getBounds();
 
+        // monster <-> obstacle
         for ( Obstacle obstacle : obstacles ) {
             Rectangle sensorBounds = obstacle.getSensor();
 
@@ -166,15 +197,19 @@ public class GameController {
 
         }
 
+        // monster <-> coin
         for ( Coin coin : coins ) {
-            hitCoin = Intersector.overlaps( monsterBounds, coin.getBounds() );
+            coin.setHit( Intersector.overlaps( monsterBounds, coin.getBounds() ) );
+            if ( coin.isHit() ) {
+                listener.hitCoin();
+
+            }
         }
     }
 
     private void removeObstacles() {
         if ( obstacles.size > 0 ) {
             for ( Obstacle obstacle : obstacles ) {
-                log.debug( "sensor hit = " + obstacle.isSensorHit() );
                 if ( obstacle.isSensorHit() ) {
                     obstacles.removeValue( obstacle, true );
                     obstaclePool.free( obstacle );

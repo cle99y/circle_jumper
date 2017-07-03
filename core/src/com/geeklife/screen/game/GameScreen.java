@@ -40,7 +40,7 @@ public class GameScreen extends ScreenAdapter {
 
             @Override
             public void hitCoin() {
-
+                GM.addToScore( GameConfig.COIN_SCORE );
             }
 
             @Override
